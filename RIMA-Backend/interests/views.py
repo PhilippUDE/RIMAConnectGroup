@@ -251,7 +251,7 @@ def get_data_similiar_interest(request, *args, **kwargs):
 
 @api_view(["post"])
 def get_data_connect(request, *args, **kwargs):
-    res =getConnectData(request.data)
+    res = getConnectData(request.data)
     #two list: random and all interests
     return Response({"message": "Successful", "data": res})
 

@@ -2,6 +2,7 @@ from ..semantic_scholar import SemanticScholarAPI
 from collections import Counter
 import random
 import wikipediaapi
+import json
 
 #test2 lukas bre embolo
 #test4
@@ -137,12 +138,13 @@ def getConnectData(id):
     authorId=id["data"]
     print("get most authors who cited me the most")
     authorsCitedMe= getMostCitedReferenced(authorId=authorId, method="citations")
-    with open("data.txt", "a") as myfile:
-            myfile.write("final_data")
     print("get authors Who I cited the most")
     authorsReferences=getMostCitedReferenced(authorId=authorId, method="references")
     data={"citations":authorsCitedMe, "references":authorsReferences}
+    with open("authorsReferences.json", "w") as myfile:
+            json.dump(authorsCitedMe, myfile)
     return data
+    
 
 def getWikiInfo(interestsData):
     #print(interest, "get wiki info")
