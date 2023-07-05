@@ -14,7 +14,7 @@ import {
   Button
 } from "@mui/material";
 
-export default function Help() {
+export default function Help(props) {
   const [windows, setWindows] = useState([
     {
       id: 1,
@@ -51,6 +51,7 @@ export default function Help() {
   const [selectedWindow, setSelectedWindow] = useState({ id: 1 });//You can change the id to 0 to show the Pop ups just once
 
   const handleClose = () => {
+    props.closeHelp();
     setSelectedWindow({ id: 0 });
   };
 
@@ -84,7 +85,7 @@ export default function Help() {
 
   return (
     <>
-      {selectedWindow.id !== 0 && (
+      {selectedWindow.id !== 0  && (
         <Dialog open={true} onClose={handleClose}>
           <DialogTitle>{windows[selectedWindow.id - 1].title}</DialogTitle>
           <DialogContent>

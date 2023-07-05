@@ -15,6 +15,7 @@ export default function Connect (props) {
     const [myInterests, setMyInterests]=useState([])
     const [noa, setNoa] = useState(3)
     const [fetching, setFetch] = useState(true)
+    const [help, setHelp] = useState(false)
     let currentUser = JSON.parse(localStorage.getItem("rimaUser"));
     console.log("test", fetching)
 
@@ -24,7 +25,7 @@ export default function Connect (props) {
         setFetch(true)
         console.log("submit")
         setDataCollected(false);
-        RestAPI.getConnectData({ data: currentUser.author_id, noa })
+        RestAPI.getConnectData({data: currentUser.author_id, noa, selectedNames})
           .then((res) => {
             const {data}=res
             setData(data.data)
@@ -38,6 +39,7 @@ export default function Connect (props) {
       };
  
     useEffect(()=>{
+
 
         console.log(selectedNames, "selectedNames in Connect------------------------------");
         
@@ -74,60 +76,76 @@ export default function Connect (props) {
         setOpen(false);
     } 
 
+    const closeHelp = () => {
+        setHelp(false);
+    }
+
     const [selectedNames, setSelectedNames] = useState([]);
 
     const handleSelectedNamesChange = (names) => {
       setSelectedNames([...names]);
     };
 
-    const testPrint = () => {
+    /*const testPrint = () => {
         console.log(selectedNames, "selectedNames in Connect------------------------------");
-    }
+    }*/
     
     return (
         <>
-
-            <Button onClick={testPrint}>Test</Button>
-            <Help/>
-            <Grid container>
-              <Grid item xs ={12} style={{padding:"8px"}}>
-              {dataCollected?
-              <>
-                    <Box display="flex" justifyContent="flex-end" alignItems="flex-end">
-                        <TextField  id="noa"
-                        label="Number"
-                        type="number"
-                        variant="outlined"
-                        size="small"
-                        onChange = {(e) => setNoa(parseInt(e.target.value, 10))}
-                        defaultValue = "3"
-                        color="primary"
-                        style={{ width: "7.5%" }}      
-                        inputProps={{
-                            min: 0,
-                            max: 10,
-                            step: 1,
-                        }}  
-                        /> 
-                        <Button onClick={submitNumber} id="submit" color="primary">Submit</Button>
-                        <Button startIcon={<FilterListIcon/>} color="primary" onClick={handleMoreFilters} >
-                            MORE
-                        </Button>
-                        <Dialog open={open} onClose={closeFilter} maxWidth="md" fullWidth>
-                            <DialogContent>
-                                <MoreFilters onClose={closeFilter} data={data} onSelectedNamesChange={handleSelectedNamesChange}/>
-                            </DialogContent>
-                        </Dialog>
+          <Grid container>
+            <Grid item xs={12} style={{ padding: "8px" }}>
+              {dataCollected ? (
+                <>
+                  <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Button onClick={setHelp} color="primary">
+                      Help
+                    </Button>
+                    {help ? (
+                      <>
+                        <Help closeHelp={closeHelp} />
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    <Box display="flex" alignItems="center">
+                    <TextField id="noa"
+                                label="Number"
+                                type="number"
+                                variant="outlined"
+                                size="small"
+                                onChange={(e) => setNoa(parseInt(e.target.value, 10))}
+                                defaultValue={noa ? noa : parseInt(3)}
+                                color="primary"
+                                style={{ width: "30%" }}
+                                inputProps={{
+                                    min: 0,
+                                    max: 10,
+                                    step: 1,
+                                }} />
+                      <Button onClick={submitNumber} id="submit" color="primary">
+                        Submit
+                      </Button>
+                      <Button startIcon={<FilterListIcon />} color="primary" onClick={handleMoreFilters}>
+                        MORE
+                      </Button>
+                      <Dialog open={open} onClose={closeFilter} maxWidth="md" fullWidth>
+                        <DialogContent>
+                          <MoreFilters onClose={closeFilter} data={data} onSelectedNamesChange={handleSelectedNamesChange} />
+                        </DialogContent>
+                      </Dialog>
                     </Box>
-                    
-                        <ConnectedGraph data={data} myInterests={myInterests}/>
-                </>     :<Loading/>
-                    }
-             
-                </Grid>
+                  </Box>
+                  <ConnectedGraph data={data} myInterests={myInterests} />
+                </>
+              ) : (
+                <Loading />
+              )}
             </Grid>
+          </Grid>
         </>
-        )
+      );
+      
+        
 };
 
 export const Loading = () => {
